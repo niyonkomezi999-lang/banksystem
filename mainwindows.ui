@@ -1,0 +1,400 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>MainWindow</class>
+ <widget class="QMainWindow" name="MainWindow">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>900</width>
+    <height>650</height>
+   </rect>
+  </property>
+  <property name="minimumSize">
+   <size>
+    <width>900</width>
+    <height>650</height>
+   </size>
+  </property>
+  <property name="windowTitle">
+   <string>Bank Account Management System</string>
+  </property>
+  <property name="styleSheet">
+   <string notr="true">QMainWindow {
+    background-color: #f5f7fa;
+}
+QGroupBox {
+    font: 700 10pt &quot;Segoe UI&quot;;
+    border: 2px solid #d1d5db;
+    border-radius: 8px;
+    margin-top: 12px;
+    padding-top: 12px;
+    background-color: #ffffff;
+}
+QGroupBox::title {
+    subcontrol-origin: margin;
+    left: 12px;
+    padding: 0 8px 0 8px;
+    color: #1e3a5f;
+}
+QPushButton {
+    font: 600 10pt &quot;Segoe UI&quot;;
+    min-width: 100px;
+    min-height: 36px;
+    padding: 6px 16px;
+    border-radius: 6px;
+    border: none;
+}
+QPushButton:hover {
+    filter: brightness(1.1);
+}
+QPushButton:pressed {
+    filter: brightness(0.95);
+}
+QPushButton:disabled {
+    background-color: #e5e7eb;
+    color: #9ca3af;
+}
+#createButton {
+    background-color: #059669;
+    color: #ffffff;
+}
+#depositButton {
+    background-color: #2563eb;
+    color: #ffffff;
+}
+#withdrawButton {
+    background-color: #dc2626;
+    color: #ffffff;
+}
+#searchButton {
+    background-color: #4b5563;
+    color: #ffffff;
+    min-width: 80px;
+}
+#clearSearchButton {
+    background-color: #f3f4f6;
+    color: #374151;
+    border: 2px solid #d1d5db;
+}
+#clearSearchButton:hover {
+    background-color: #e5e7eb;
+}
+#displayButton {
+    background-color: #0891b2;
+    color: #ffffff;
+}
+#checkBalanceButton {
+    background-color: #7c3aed;
+    color: #ffffff;
+}
+#resetButton {
+    background-color: #f59e0b;
+    color: #ffffff;
+}
+#exitButton {
+    background-color: #374151;
+    color: #ffffff;
+}
+QLineEdit {
+    font: 400 10pt &quot;Segoe UI&quot;;
+    min-height: 32px;
+    padding: 4px 10px;
+    border: 2px solid #d1d5db;
+    border-radius: 6px;
+    background-color: #ffffff;
+    selection-background-color: #bfdbfe;
+}
+QLineEdit:focus {
+    border: 2px solid #3b82f6;
+}
+QTextEdit {
+    font: 400 10pt &quot;Segoe UI&quot;;
+    border: 2px solid #e5e7eb;
+    border-radius: 8px;
+    background-color: #f9fafb;
+    padding: 12px;
+}
+QStatusBar {
+    font: 400 9pt &quot;Segoe UI&quot;;
+    background-color: #1e3a5f;
+    color: #ffffff;
+    padding: 4px 12px;
+}
+QMenuBar {
+    font: 400 9pt &quot;Segoe UI&quot;;
+    background-color: #ffffff;
+    color: #111827;
+    border-bottom: 1px solid #e5e7eb;
+}
+QLabel {
+    font: 400 10pt &quot;Segoe UI&quot;;
+    color: #4b5563;
+    padding: 2px 4px;
+}
+#currencyLabel {
+    font: 600 10pt &quot;Segoe UI&quot;;
+    color: #6b7280;
+    padding: 4px 2px;
+}
+QComboBox {
+    font: 400 10pt &quot;Segoe UI&quot;;
+    min-height: 32px;
+    padding: 4px 10px;
+    border: 2px solid #d1d5db;
+    border-radius: 6px;
+    background-color: #ffffff;
+}
+QComboBox:focus {
+    border: 2px solid #3b82f6;
+}
+QComboBox::drop-down {
+    border: none;
+    width: 28px;
+}
+QComboBox QAbstractItemView {
+    background-color: #ffffff;
+    border: 1px solid #e5e7eb;
+    selection-background-color: #eff6ff;
+    selection-color: #1e40af;
+}</string>
+  </property>
+  <widget class="QWidget" name="centralwidget">
+   <layout class="QVBoxLayout" name="verticalLayout">
+    <property name="spacing">
+     <number>16</number>
+    </property>
+    <property name="leftMargin">
+     <number>20</number>
+    </property>
+    <property name="topMargin">
+     <number>20</number>
+    </property>
+    <property name="rightMargin">
+     <number>20</number>
+    </property>
+    <property name="bottomMargin">
+     <number>20</number>
+    </property>
+    <item>
+     <widget class="QGroupBox" name="groupBox">
+      <property name="title">
+       <string>Recherche de compte</string>
+      </property>
+      <layout class="QHBoxLayout" name="horizontalLayout_2">
+       <property name="spacing">
+        <number>12</number>
+       </property>
+       <item>
+        <widget class="QLabel" name="label">
+         <property name="text">
+          <string>Numéro de compte</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QLineEdit" name="searchLineEdit">
+         <property name="placeholderText">
+          <string>Entrez le numéro de compte...</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QLabel" name="label_type">
+         <property name="text">
+          <string>Type</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QComboBox" name="searchTypeComboBox">
+         <item>
+          <property name="text">
+           <string>Tous</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>Savings</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>Current</string>
+          </property>
+         </item>
+        </widget>
+       </item>
+       <item>
+        <widget class="QPushButton" name="searchButton">
+         <property name="text">
+          <string>Rechercher</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QPushButton" name="clearSearchButton">
+         <property name="text">
+          <string>Effacer</string>
+         </property>
+        </widget>
+       </item>
+      </layout>
+     </widget>
+    </item>
+    <item>
+     <widget class="QGroupBox" name="groupBox_2">
+      <property name="title">
+       <string>Transactions</string>
+      </property>
+      <layout class="QHBoxLayout" name="horizontalLayout">
+       <property name="spacing">
+        <number>14</number>
+       </property>
+       <item>
+        <widget class="QLabel" name="label_2">
+         <property name="text">
+          <string>Montant</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QLineEdit" name="amountLineEdit">
+         <property name="placeholderText">
+          <string>0.00</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QLabel" name="currencyLabel">
+         <property name="text">
+          <string>EUR</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <spacer name="transactionSpacer">
+         <property name="orientation">
+          <enum>Qt::Orientation::Horizontal</enum>
+         </property>
+         <property name="sizeHint" stdset="0">
+          <size>
+           <width>20</width>
+           <height>20</height>
+          </size>
+         </property>
+        </spacer>
+       </item>
+       <item>
+        <spacer name="horizontalSpacer_2">
+         <property name="orientation">
+          <enum>Qt::Orientation::Horizontal</enum>
+         </property>
+         <property name="sizeHint" stdset="0">
+          <size>
+           <width>40</width>
+           <height>20</height>
+          </size>
+         </property>
+        </spacer>
+       </item>
+       <item>
+        <widget class="QPushButton" name="depositButton">
+         <property name="text">
+          <string>Dépôt</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QPushButton" name="withdrawButton">
+         <property name="text">
+          <string>Retrait</string>
+         </property>
+        </widget>
+       </item>
+      </layout>
+     </widget>
+    </item>
+    <item>
+     <widget class="QGroupBox" name="groupBox_3">
+      <property name="title">
+       <string>Actions</string>
+      </property>
+      <layout class="QHBoxLayout" name="horizontalLayout_3">
+       <property name="spacing">
+        <number>12</number>
+       </property>
+       <item>
+        <widget class="QPushButton" name="createButton">
+         <property name="text">
+          <string>Créer un Compte</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QPushButton" name="displayButton">
+         <property name="text">
+          <string>Afficher Détails</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QPushButton" name="checkBalanceButton">
+         <property name="text">
+          <string>Consulter Solde</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QPushButton" name="resetButton">
+         <property name="text">
+          <string>Réinitialiser</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QPushButton" name="exitButton">
+         <property name="text">
+          <string>Quitter</string>
+         </property>
+        </widget>
+       </item>
+      </layout>
+     </widget>
+    </item>
+    <item>
+     <widget class="QGroupBox" name="groupBox_4">
+      <property name="title">
+       <string>Informations du compte</string>
+      </property>
+      <layout class="QVBoxLayout" name="verticalLayout_2">
+       <property name="spacing">
+        <number>8</number>
+       </property>
+       <item>
+        <widget class="QTextEdit" name="detailDisplay">
+         <property name="readOnly">
+          <bool>true</bool>
+         </property>
+        </widget>
+       </item>
+      </layout>
+     </widget>
+    </item>
+   </layout>
+  </widget>
+  <widget class="QMenuBar" name="menubar">
+   <property name="geometry">
+    <rect>
+     <x>0</x>
+     <y>0</y>
+     <width>900</width>
+     <height>22</height>
+    </rect>
+   </property>
+  </widget>
+  <widget class="QStatusBar" name="statusbar"/>
+ </widget>
+ <resources/>
+ <connections/>
+</ui>
