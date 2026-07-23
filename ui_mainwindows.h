@@ -16,6 +16,7 @@
 #include <QtWidgets/QHBoxLayout>
 #include <QtWidgets/QLabel>
 #include <QtWidgets/QLineEdit>
+#include <QtWidgets/QListWidget>
 #include <QtWidgets/QMainWindow>
 #include <QtWidgets/QMenuBar>
 #include <QtWidgets/QPushButton>
@@ -38,6 +39,8 @@ public:
     QLineEdit *searchLineEdit;
     QLabel *label_type;
     QComboBox *searchTypeComboBox;
+    QLabel *label_pin;
+    QLineEdit *pinLineEdit;
     QPushButton *searchButton;
     QPushButton *clearSearchButton;
     QGroupBox *groupBox_2;
@@ -45,8 +48,9 @@ public:
     QLabel *label_2;
     QLineEdit *amountLineEdit;
     QLabel *currencyLabel;
+    QLabel *label_currency;
+    QComboBox *currencyComboBox;
     QSpacerItem *transactionSpacer;
-    QSpacerItem *horizontalSpacer_2;
     QPushButton *depositButton;
     QPushButton *withdrawButton;
     QGroupBox *groupBox_3;
@@ -56,9 +60,16 @@ public:
     QPushButton *checkBalanceButton;
     QPushButton *resetButton;
     QPushButton *exitButton;
+    QGroupBox *groupBox_tools;
+    QHBoxLayout *horizontalLayout_tools;
+    QPushButton *interestButton;
+    QPushButton *darkModeButton;
+    QPushButton *exportButton;
+    QPushButton *importButton;
     QGroupBox *groupBox_4;
     QVBoxLayout *verticalLayout_2;
     QTextEdit *detailDisplay;
+    QListWidget *transactionListWidget;
     QMenuBar *menubar;
     QStatusBar *statusbar;
 
@@ -66,8 +77,8 @@ public:
     {
         if (MainWindow->objectName().isEmpty())
             MainWindow->setObjectName("MainWindow");
-        MainWindow->resize(900, 650);
-        MainWindow->setMinimumSize(QSize(900, 650));
+        MainWindow->resize(900, 800);
+        MainWindow->setMinimumSize(QSize(900, 800));
         MainWindow->setStyleSheet(QString::fromUtf8("QMainWindow {\n"
 "    background-color: #f5f7fa;\n"
 "}\n"
@@ -145,6 +156,23 @@ public:
 "    background-color: #374151;\n"
 "    color: #ffffff;\n"
 "}\n"
+"#interestButton {\n"
+"    background-color: #0891b2;\n"
+"    color: #ffffff;\n"
+"}\n"
+"#darkModeButton {\n"
+"    background-color: #7c3aed;\n"
+"    color: #ffffff;\n"
+"}\n"
+"#exportButton {\n"
+"    background-color: #059669;\n"
+"    color: #ffffff;\n"
+"}\n"
+"#importButton {\n"
+"    background-color: #d97706;\n"
+"    color"
+                        ": #ffffff;\n"
+"}\n"
 "QLineEdit {\n"
 "    font: 400 10pt \"Segoe UI\";\n"
 "    min-height: 32px;\n"
@@ -157,13 +185,19 @@ public:
 "QLineEdit:focus {\n"
 "    border: 2px solid #3b82f6;\n"
 "}\n"
-"QText"
-                        "Edit {\n"
+"QTextEdit {\n"
 "    font: 400 10pt \"Segoe UI\";\n"
 "    border: 2px solid #e5e7eb;\n"
 "    border-radius: 8px;\n"
 "    background-color: #f9fafb;\n"
 "    padding: 12px;\n"
+"}\n"
+"QListWidget {\n"
+"    font: 400 10pt \"Segoe UI\";\n"
+"    border: 2px solid #e5e7eb;\n"
+"    border-radius: 8px;\n"
+"    background-color: #f9fafb;\n"
+"    padding: 8px;\n"
 "}\n"
 "QStatusBar {\n"
 "    font: 400 9pt \"Segoe UI\";\n"
@@ -178,7 +212,8 @@ public:
 "    border-bottom: 1px solid #e5e7eb;\n"
 "}\n"
 "QLabel {\n"
-"    font: 400 10pt \"Segoe UI\";\n"
+"    font:"
+                        " 400 10pt \"Segoe UI\";\n"
 "    color: #4b5563;\n"
 "    padding: 2px 4px;\n"
 "}\n"
@@ -200,8 +235,7 @@ public:
 "}\n"
 "QComboBox::drop-down {\n"
 "    border: none;\n"
-"    w"
-                        "idth: 28px;\n"
+"    width: 28px;\n"
 "}\n"
 "QComboBox QAbstractItemView {\n"
 "    background-color: #ffffff;\n"
@@ -243,6 +277,17 @@ public:
 
         horizontalLayout_2->addWidget(searchTypeComboBox);
 
+        label_pin = new QLabel(groupBox);
+        label_pin->setObjectName("label_pin");
+
+        horizontalLayout_2->addWidget(label_pin);
+
+        pinLineEdit = new QLineEdit(groupBox);
+        pinLineEdit->setObjectName("pinLineEdit");
+        pinLineEdit->setMaxLength(4);
+
+        horizontalLayout_2->addWidget(pinLineEdit);
+
         searchButton = new QPushButton(groupBox);
         searchButton->setObjectName("searchButton");
 
@@ -276,13 +321,22 @@ public:
 
         horizontalLayout->addWidget(currencyLabel);
 
+        label_currency = new QLabel(groupBox_2);
+        label_currency->setObjectName("label_currency");
+
+        horizontalLayout->addWidget(label_currency);
+
+        currencyComboBox = new QComboBox(groupBox_2);
+        currencyComboBox->addItem(QString());
+        currencyComboBox->addItem(QString());
+        currencyComboBox->addItem(QString());
+        currencyComboBox->setObjectName("currencyComboBox");
+
+        horizontalLayout->addWidget(currencyComboBox);
+
         transactionSpacer = new QSpacerItem(20, 20, QSizePolicy::Policy::Expanding, QSizePolicy::Policy::Minimum);
 
         horizontalLayout->addItem(transactionSpacer);
-
-        horizontalSpacer_2 = new QSpacerItem(40, 20, QSizePolicy::Policy::Expanding, QSizePolicy::Policy::Minimum);
-
-        horizontalLayout->addItem(horizontalSpacer_2);
 
         depositButton = new QPushButton(groupBox_2);
         depositButton->setObjectName("depositButton");
@@ -330,6 +384,34 @@ public:
 
         verticalLayout->addWidget(groupBox_3);
 
+        groupBox_tools = new QGroupBox(centralwidget);
+        groupBox_tools->setObjectName("groupBox_tools");
+        horizontalLayout_tools = new QHBoxLayout(groupBox_tools);
+        horizontalLayout_tools->setSpacing(12);
+        horizontalLayout_tools->setObjectName("horizontalLayout_tools");
+        interestButton = new QPushButton(groupBox_tools);
+        interestButton->setObjectName("interestButton");
+
+        horizontalLayout_tools->addWidget(interestButton);
+
+        darkModeButton = new QPushButton(groupBox_tools);
+        darkModeButton->setObjectName("darkModeButton");
+
+        horizontalLayout_tools->addWidget(darkModeButton);
+
+        exportButton = new QPushButton(groupBox_tools);
+        exportButton->setObjectName("exportButton");
+
+        horizontalLayout_tools->addWidget(exportButton);
+
+        importButton = new QPushButton(groupBox_tools);
+        importButton->setObjectName("importButton");
+
+        horizontalLayout_tools->addWidget(importButton);
+
+
+        verticalLayout->addWidget(groupBox_tools);
+
         groupBox_4 = new QGroupBox(centralwidget);
         groupBox_4->setObjectName("groupBox_4");
         verticalLayout_2 = new QVBoxLayout(groupBox_4);
@@ -340,6 +422,11 @@ public:
         detailDisplay->setReadOnly(true);
 
         verticalLayout_2->addWidget(detailDisplay);
+
+        transactionListWidget = new QListWidget(groupBox_4);
+        transactionListWidget->setObjectName("transactionListWidget");
+
+        verticalLayout_2->addWidget(transactionListWidget);
 
 
         verticalLayout->addWidget(groupBox_4);
@@ -369,12 +456,19 @@ public:
         searchTypeComboBox->setItemText(1, QCoreApplication::translate("MainWindow", "Savings", nullptr));
         searchTypeComboBox->setItemText(2, QCoreApplication::translate("MainWindow", "Current", nullptr));
 
+        label_pin->setText(QCoreApplication::translate("MainWindow", "PIN", nullptr));
+        pinLineEdit->setPlaceholderText(QCoreApplication::translate("MainWindow", "Entrez le PIN...", nullptr));
         searchButton->setText(QCoreApplication::translate("MainWindow", "Rechercher", nullptr));
         clearSearchButton->setText(QCoreApplication::translate("MainWindow", "Effacer", nullptr));
         groupBox_2->setTitle(QCoreApplication::translate("MainWindow", "Transactions", nullptr));
         label_2->setText(QCoreApplication::translate("MainWindow", "Montant", nullptr));
         amountLineEdit->setPlaceholderText(QCoreApplication::translate("MainWindow", "0.00", nullptr));
         currencyLabel->setText(QCoreApplication::translate("MainWindow", "EUR", nullptr));
+        label_currency->setText(QCoreApplication::translate("MainWindow", "Devise", nullptr));
+        currencyComboBox->setItemText(0, QCoreApplication::translate("MainWindow", "EUR", nullptr));
+        currencyComboBox->setItemText(1, QCoreApplication::translate("MainWindow", "USD", nullptr));
+        currencyComboBox->setItemText(2, QCoreApplication::translate("MainWindow", "GBP", nullptr));
+
         depositButton->setText(QCoreApplication::translate("MainWindow", "D\303\251p\303\264t", nullptr));
         withdrawButton->setText(QCoreApplication::translate("MainWindow", "Retrait", nullptr));
         groupBox_3->setTitle(QCoreApplication::translate("MainWindow", "Actions", nullptr));
@@ -383,6 +477,11 @@ public:
         checkBalanceButton->setText(QCoreApplication::translate("MainWindow", "Consulter Solde", nullptr));
         resetButton->setText(QCoreApplication::translate("MainWindow", "R\303\251initialiser", nullptr));
         exitButton->setText(QCoreApplication::translate("MainWindow", "Quitter", nullptr));
+        groupBox_tools->setTitle(QCoreApplication::translate("MainWindow", "Outils avanc\303\251s", nullptr));
+        interestButton->setText(QCoreApplication::translate("MainWindow", "Calculer Int\303\251r\303\252ts", nullptr));
+        darkModeButton->setText(QCoreApplication::translate("MainWindow", "Mode Sombre", nullptr));
+        exportButton->setText(QCoreApplication::translate("MainWindow", "Exporter CSV", nullptr));
+        importButton->setText(QCoreApplication::translate("MainWindow", "Importer CSV", nullptr));
         groupBox_4->setTitle(QCoreApplication::translate("MainWindow", "Informations du compte", nullptr));
     } // retranslateUi
 

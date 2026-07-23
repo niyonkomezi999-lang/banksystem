@@ -1,13 +1,14 @@
 #include "bankaccount.h"
 
 BankAccount::BankAccount() 
-    : depositorName(""), accountNumber(0), accountType(""), balance(0.0) {}
+    : depositorName(""), accountNumber(0), accountType(""), balance(0.0), pin("") {}
 
-void BankAccount::createAccount(QString name, int accNum, QString type, double initialBalance) {
+void BankAccount::createAccount(QString name, int accNum, QString type, double initialBalance, QString accountPin) {
     depositorName = name;
     accountNumber = accNum;
     accountType = type;
     balance = initialBalance;
+    pin = accountPin;
 }
 
 bool BankAccount::deposit(double amount) {
@@ -44,4 +45,12 @@ QString BankAccount::getAccountDetails() const {
             .arg(depositorName)
             .arg(accountType)
             .arg(getBalanceString());
+}
+
+QString BankAccount::getPin() const {
+    return pin;
+}
+
+bool BankAccount::verifyPin(const QString &inputPin) const {
+    return pin == inputPin;
 }

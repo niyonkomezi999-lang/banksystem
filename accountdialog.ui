@@ -7,13 +7,13 @@
     <x>0</x>
     <y>0</y>
     <width>500</width>
-    <height>320</height>
+    <height>360</height>
    </rect>
   </property>
   <property name="minimumSize">
    <size>
     <width>500</width>
-    <height>320</height>
+    <height>360</height>
    </size>
   </property>
   <property name="windowTitle">
@@ -151,27 +151,44 @@ QPushButton {
     </widget>
    </item>
    <item row="3" column="0">
+    <widget class="QLabel" name="label_pin">
+     <property name="text">
+      <string>PIN (4 chiffres)</string>
+     </property>
+    </widget>
+   </item>
+   <item row="3" column="1">
+    <widget class="QLineEdit" name="pinEdit">
+     <property name="placeholderText">
+      <string>Ex : 1234</string>
+     </property>
+     <property name="maxLength">
+      <number>4</number>
+     </property>
+    </widget>
+   </item>
+   <item row="4" column="0">
     <widget class="QLabel" name="label_4">
      <property name="text">
       <string>Dépôt initial (€)</string>
      </property>
     </widget>
    </item>
-   <item row="3" column="1">
+   <item row="4" column="1">
     <widget class="QLineEdit" name="initialBalanceEdit">
      <property name="placeholderText">
       <string>0.00</string>
      </property>
     </widget>
    </item>
-   <item row="4" column="0">
+   <item row="5" column="0">
     <widget class="QPushButton" name="cancelButton">
      <property name="text">
       <string>Annuler</string>
      </property>
     </widget>
    </item>
-   <item row="4" column="1">
+   <item row="5" column="1">
     <widget class="QPushButton" name="okButton">
      <property name="text">
       <string>Valider</string>

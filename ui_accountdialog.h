@@ -30,6 +30,8 @@ public:
     QLineEdit *accNumEdit;
     QLabel *label_3;
     QComboBox *typeComboBox;
+    QLabel *label_pin;
+    QLineEdit *pinEdit;
     QLabel *label_4;
     QLineEdit *initialBalanceEdit;
     QPushButton *cancelButton;
@@ -39,8 +41,8 @@ public:
     {
         if (AccountDialog->objectName().isEmpty())
             AccountDialog->setObjectName("AccountDialog");
-        AccountDialog->resize(500, 320);
-        AccountDialog->setMinimumSize(QSize(500, 320));
+        AccountDialog->resize(500, 360);
+        AccountDialog->setMinimumSize(QSize(500, 360));
         AccountDialog->setStyleSheet(QString::fromUtf8("QDialog {\n"
 "    background-color: #f8fafc;\n"
 "}\n"
@@ -142,25 +144,36 @@ public:
 
         formLayout->setWidget(2, QFormLayout::ItemRole::FieldRole, typeComboBox);
 
+        label_pin = new QLabel(AccountDialog);
+        label_pin->setObjectName("label_pin");
+
+        formLayout->setWidget(3, QFormLayout::ItemRole::LabelRole, label_pin);
+
+        pinEdit = new QLineEdit(AccountDialog);
+        pinEdit->setObjectName("pinEdit");
+        pinEdit->setMaxLength(4);
+
+        formLayout->setWidget(3, QFormLayout::ItemRole::FieldRole, pinEdit);
+
         label_4 = new QLabel(AccountDialog);
         label_4->setObjectName("label_4");
 
-        formLayout->setWidget(3, QFormLayout::ItemRole::LabelRole, label_4);
+        formLayout->setWidget(4, QFormLayout::ItemRole::LabelRole, label_4);
 
         initialBalanceEdit = new QLineEdit(AccountDialog);
         initialBalanceEdit->setObjectName("initialBalanceEdit");
 
-        formLayout->setWidget(3, QFormLayout::ItemRole::FieldRole, initialBalanceEdit);
+        formLayout->setWidget(4, QFormLayout::ItemRole::FieldRole, initialBalanceEdit);
 
         cancelButton = new QPushButton(AccountDialog);
         cancelButton->setObjectName("cancelButton");
 
-        formLayout->setWidget(4, QFormLayout::ItemRole::LabelRole, cancelButton);
+        formLayout->setWidget(5, QFormLayout::ItemRole::LabelRole, cancelButton);
 
         okButton = new QPushButton(AccountDialog);
         okButton->setObjectName("okButton");
 
-        formLayout->setWidget(4, QFormLayout::ItemRole::FieldRole, okButton);
+        formLayout->setWidget(5, QFormLayout::ItemRole::FieldRole, okButton);
 
 
         retranslateUi(AccountDialog);
@@ -179,6 +192,8 @@ public:
         typeComboBox->setItemText(0, QCoreApplication::translate("AccountDialog", "Savings", nullptr));
         typeComboBox->setItemText(1, QCoreApplication::translate("AccountDialog", "Current", nullptr));
 
+        label_pin->setText(QCoreApplication::translate("AccountDialog", "PIN (4 chiffres)", nullptr));
+        pinEdit->setPlaceholderText(QCoreApplication::translate("AccountDialog", "Ex : 1234", nullptr));
         label_4->setText(QCoreApplication::translate("AccountDialog", "D\303\251p\303\264t initial (\342\202\254)", nullptr));
         initialBalanceEdit->setPlaceholderText(QCoreApplication::translate("AccountDialog", "0.00", nullptr));
         cancelButton->setText(QCoreApplication::translate("AccountDialog", "Annuler", nullptr));

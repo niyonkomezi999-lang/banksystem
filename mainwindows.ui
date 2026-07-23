@@ -7,13 +7,13 @@
     <x>0</x>
     <y>0</y>
     <width>900</width>
-    <height>650</height>
+    <height>800</height>
    </rect>
   </property>
   <property name="minimumSize">
    <size>
     <width>900</width>
-    <height>650</height>
+    <height>800</height>
    </size>
   </property>
   <property name="windowTitle">
@@ -96,6 +96,22 @@ QPushButton:disabled {
     background-color: #374151;
     color: #ffffff;
 }
+#interestButton {
+    background-color: #0891b2;
+    color: #ffffff;
+}
+#darkModeButton {
+    background-color: #7c3aed;
+    color: #ffffff;
+}
+#exportButton {
+    background-color: #059669;
+    color: #ffffff;
+}
+#importButton {
+    background-color: #d97706;
+    color: #ffffff;
+}
 QLineEdit {
     font: 400 10pt &quot;Segoe UI&quot;;
     min-height: 32px;
@@ -114,6 +130,13 @@ QTextEdit {
     border-radius: 8px;
     background-color: #f9fafb;
     padding: 12px;
+}
+QListWidget {
+    font: 400 10pt &quot;Segoe UI&quot;;
+    border: 2px solid #e5e7eb;
+    border-radius: 8px;
+    background-color: #f9fafb;
+    padding: 8px;
 }
 QStatusBar {
     font: 400 9pt &quot;Segoe UI&quot;;
@@ -223,10 +246,27 @@ QComboBox QAbstractItemView {
            <string>Current</string>
           </property>
          </item>
-        </widget>
-       </item>
-       <item>
-        <widget class="QPushButton" name="searchButton">
+       </widget>
+      </item>
+      <item>
+       <widget class="QLabel" name="label_pin">
+        <property name="text">
+         <string>PIN</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QLineEdit" name="pinLineEdit">
+        <property name="placeholderText">
+         <string>Entrez le PIN...</string>
+        </property>
+        <property name="maxLength">
+         <number>4</number>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QPushButton" name="searchButton">
          <property name="text">
           <string>Rechercher</string>
          </property>
@@ -273,6 +313,32 @@ QComboBox QAbstractItemView {
         </widget>
        </item>
        <item>
+        <widget class="QLabel" name="label_currency">
+         <property name="text">
+          <string>Devise</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QComboBox" name="currencyComboBox">
+         <item>
+          <property name="text">
+           <string>EUR</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>USD</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>GBP</string>
+          </property>
+         </item>
+        </widget>
+       </item>
+       <item>
         <spacer name="transactionSpacer">
          <property name="orientation">
           <enum>Qt::Orientation::Horizontal</enum>
@@ -280,19 +346,6 @@ QComboBox QAbstractItemView {
          <property name="sizeHint" stdset="0">
           <size>
            <width>20</width>
-           <height>20</height>
-          </size>
-         </property>
-        </spacer>
-       </item>
-       <item>
-        <spacer name="horizontalSpacer_2">
-         <property name="orientation">
-          <enum>Qt::Orientation::Horizontal</enum>
-         </property>
-         <property name="sizeHint" stdset="0">
-          <size>
-           <width>40</width>
            <height>20</height>
           </size>
          </property>
@@ -363,6 +416,46 @@ QComboBox QAbstractItemView {
      </widget>
     </item>
     <item>
+     <widget class="QGroupBox" name="groupBox_tools">
+      <property name="title">
+       <string>Outils avancés</string>
+      </property>
+      <layout class="QHBoxLayout" name="horizontalLayout_tools">
+       <property name="spacing">
+        <number>12</number>
+       </property>
+       <item>
+        <widget class="QPushButton" name="interestButton">
+         <property name="text">
+          <string>Calculer Intérêts</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QPushButton" name="darkModeButton">
+         <property name="text">
+          <string>Mode Sombre</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QPushButton" name="exportButton">
+         <property name="text">
+          <string>Exporter CSV</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QPushButton" name="importButton">
+         <property name="text">
+          <string>Importer CSV</string>
+         </property>
+        </widget>
+       </item>
+      </layout>
+     </widget>
+    </item>
+    <item>
      <widget class="QGroupBox" name="groupBox_4">
       <property name="title">
        <string>Informations du compte</string>
@@ -377,6 +470,9 @@ QComboBox QAbstractItemView {
           <bool>true</bool>
          </property>
         </widget>
+       </item>
+       <item>
+        <widget class="QListWidget" name="transactionListWidget"/>
        </item>
       </layout>
      </widget>

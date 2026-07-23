@@ -9,10 +9,11 @@ private:
     int accountNumber;
     QString accountType; // "Savings" or "Current"
     double balance;
+    QString pin;
 
 public:
     BankAccount();
-    void createAccount(QString name, int accNum, QString type, double initialBalance);
+    void createAccount(QString name, int accNum, QString type, double initialBalance, QString pin);
     
     bool deposit(double amount);
     bool withdraw(double amount);
@@ -22,8 +23,10 @@ public:
     int getAccountNumber() const;
     QString getAccountType() const;
     double getBalance() const;
+    QString getPin() const;
     QString getBalanceString() const;
     QString getAccountDetails() const;
+    bool verifyPin(const QString &inputPin) const;
 };
 
 #endif // BANKACCOUNT_H
