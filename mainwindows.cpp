@@ -16,17 +16,22 @@ MainWindow::MainWindow(QWidget *parent)
 {
     ui->setupUi(this);
 
-    if (dbManager->openDatabase()) {
-        dbManager->loadAccounts(accountsList);
-        statusBar()->showMessage("Base de données chargée. " + QString::number(accountsList.size()) + " compte(s) trouvé(s).");
-    } else {
-        QMessageBox msgBox(this);
-        msgBox.setIcon(QMessageBox::Warning);
-        msgBox.setWindowTitle("Base de données");
-        msgBox.setText("Impossible d'ouvrir la base de données. Les données ne seront pas sauvegardées.");
-        styleMessageBox(&msgBox);
-        msgBox.exec();
+    if (!dbManager->openDatabase()) {
+        QMessageBox::critical(this, "Erreur critique", "Impossible d'ouvrir la base de données.\nL'application va se fermer.");
+        QApplication::quit();
+        return;
     }
+
+    dbManager->loadAccounts(accountsList);
+
+    if (accountsList.isEmpty()) {
+        dbManager->initializeDefaultData();
+        dbManager->loadAccounts(accountsList);
+    }
+
+    dbManager->loadTransactions(transactionHistory);
+
+    statusBar()->showMessage("Base de données chargée. " + QString::number(accountsList.size()) + " compte(s) trouvé(s).");
 
     connect(ui->createButton, &QPushButton::clicked, this, &MainWindow::onCreateAccount);
     connect(ui->depositButton, &QPushButton::clicked, this, &MainWindow::onDeposit);
@@ -58,10 +63,8 @@ void MainWindow::onCreateAccount()
     AccountDialog dialog(this, isDarkMode);
 
     if (dialog.exec() == QDialog::Accepted) {
-        // Récupération du compte configuré et validé par le QDialog
         BankAccount newAccount = dialog.getCreatedAccount();
 
-        // Validation Bonus : Éviter les doublons de numéros de compte
         for (const BankAccount &acc : accountsList) {
             if (acc.getAccountNumber() == newAccount.getAccountNumber()) {
                 QMessageBox msgBox(this);
@@ -75,22 +78,21 @@ void MainWindow::onCreateAccount()
             }
         }
 
-        // Ajouter le compte à la liste globale
-        accountsList.append(newAccount);
-
-        // Mettre à jour le pointeur vers le compte actif (le dernier ajouté)
-        currentAccount = &accountsList.last();
-
         if (!dbManager->insertAccount(newAccount)) {
             QMessageBox msgBox(this);
             msgBox.setIcon(QMessageBox::Warning);
             msgBox.setWindowTitle("Base de données");
-            msgBox.setText("Compte créé mais erreur lors de l'enregistrement dans la base de données !");
+            msgBox.setText("Erreur lors de l'enregistrement du compte dans la base de données !");
             styleMessageBox(&msgBox);
             msgBox.exec();
+            statusBar()->showMessage("Échec : erreur base de données.");
+            return;
         }
 
-        transactionHistory[newAccount.getAccountNumber()].append("Compte créé - " + QDateTime::currentDateTime().toString());
+        dbManager->addTransaction(newAccount.getAccountNumber(), "Compte créé");
+
+        accountsList.append(newAccount);
+        currentAccount = &accountsList.last();
 
         QMessageBox msgBox(this);
         msgBox.setIcon(QMessageBox::Information);
@@ -100,7 +102,6 @@ void MainWindow::onCreateAccount()
         msgBox.exec();
         statusBar()->showMessage("Nouveau compte enregistré avec succès.");
 
-        // Affichage immédiat des détails
         onDisplayDetails();
     } else {
         statusBar()->showMessage("Création de compte annulée.");
@@ -159,7 +160,6 @@ void MainWindow::onSearchAccount()
 
     if (currentAccount != nullptr) {
         ui->detailDisplay->setText(currentAccount->getAccountDetails());
-        updateTransactionDisplay();
         statusBar()->showMessage("Compte actif : " + currentAccount->getDepositorName());
         ui->pinLineEdit->clear();
     } else {
@@ -229,7 +229,6 @@ void MainWindow::onCheckBalance()
 // --- PARTIE 3.3 & 5 : OPÉRATION DE DÉPÔT ---
 void MainWindow::onDeposit()
 {
-    // Validation : Le compte doit exister/être sélectionné
     if (currentAccount == nullptr) {
         QMessageBox msgBox(this);
         msgBox.setIcon(QMessageBox::Warning);
@@ -240,7 +239,11 @@ void MainWindow::onDeposit()
         return;
     }
 
-    // Validation : Le montant doit être numérique et positif
+    if (!dbManager->isDatabaseOpen()) {
+        QMessageBox::critical(this, "Erreur base de données", "La base de données n'est pas accessible. Opération annulée.");
+        return;
+    }
+
     bool ok;
     double amount = ui->amountLineEdit->text().toDouble(&ok);
     if (!ok || amount <= 0) {
@@ -253,18 +256,24 @@ void MainWindow::onDeposit()
         return;
     }
 
-    // Exécution du dépôt via le Backend
     if (currentAccount->deposit(amount)) {
-        dbManager->updateAccount(*currentAccount);
-        transactionHistory[currentAccount->getAccountNumber()].append("Dépôt de " + QString::number(amount, 'f', 2) + " € - " + QDateTime::currentDateTime().toString());
+        if (!dbManager->updateAccount(*currentAccount)) {
+            QMessageBox::warning(this, "Base de données", "Le dépôt a été effectué en mémoire, mais l'enregistrement en base a échoué.");
+        }
+
+        if (!dbManager->addTransaction(currentAccount->getAccountNumber(), "Dépôt de " + QString::number(amount, 'f', 2) + " €")) {
+            QMessageBox::warning(this, "Base de données", "Le dépôt a été effectué, mais l'historique n'a pas pu être enregistré.");
+        }
+
+        transactionHistory[currentAccount->getAccountNumber()].append("Dépôt de " + QString::number(amount, 'f', 2) + " € | " + QDateTime::currentDateTime().toString(Qt::ISODate));
+
         QMessageBox msgBox(this);
         msgBox.setIcon(QMessageBox::Information);
         msgBox.setWindowTitle("Succès");
         msgBox.setText("Dépôt réussi !\nNouveau solde : " + currentAccount->getBalanceString());
         styleMessageBox(&msgBox);
         msgBox.exec();
-        ui->detailDisplay->setText(currentAccount->getAccountDetails()); // Rafraîchir l'affichage
-        updateTransactionDisplay();
+        ui->detailDisplay->setText(currentAccount->getAccountDetails());
         statusBar()->showMessage("Dépôt de " + QString::number(amount, 'f', 2) + " € effectué.");
         ui->amountLineEdit->clear();
     }
@@ -273,7 +282,6 @@ void MainWindow::onDeposit()
 // --- PARTIE 3.4 & 5 : OPÉRATION DE RETRAIT ---
 void MainWindow::onWithdraw()
 {
-    // Validation : Le compte doit exister
     if (currentAccount == nullptr) {
         QMessageBox msgBox(this);
         msgBox.setIcon(QMessageBox::Warning);
@@ -284,7 +292,11 @@ void MainWindow::onWithdraw()
         return;
     }
 
-    // Validation : Le montant doit être numérique et positif
+    if (!dbManager->isDatabaseOpen()) {
+        QMessageBox::critical(this, "Erreur base de données", "La base de données n'est pas accessible. Opération annulée.");
+        return;
+    }
+
     bool ok;
     double amount = ui->amountLineEdit->text().toDouble(&ok);
     if (!ok || amount <= 0) {
@@ -297,22 +309,27 @@ void MainWindow::onWithdraw()
         return;
     }
 
-    // Exécution du retrait (le backend vérifie automatiquement le solde disponible)
     if (currentAccount->withdraw(amount)) {
-        dbManager->updateAccount(*currentAccount);
-        transactionHistory[currentAccount->getAccountNumber()].append("Retrait de " + QString::number(amount, 'f', 2) + " € - " + QDateTime::currentDateTime().toString());
+        if (!dbManager->updateAccount(*currentAccount)) {
+            QMessageBox::warning(this, "Base de données", "Le retrait a été effectué en mémoire, mais l'enregistrement en base a échoué.");
+        }
+
+        if (!dbManager->addTransaction(currentAccount->getAccountNumber(), "Retrait de " + QString::number(amount, 'f', 2) + " €")) {
+            QMessageBox::warning(this, "Base de données", "Le retrait a été effectué, mais l'historique n'a pas pu être enregistré.");
+        }
+
+        transactionHistory[currentAccount->getAccountNumber()].append("Retrait de " + QString::number(amount, 'f', 2) + " € | " + QDateTime::currentDateTime().toString(Qt::ISODate));
+
         QMessageBox msgBox(this);
         msgBox.setIcon(QMessageBox::Information);
         msgBox.setWindowTitle("Succès");
         msgBox.setText("Retrait réussi !\nNouveau solde : " + currentAccount->getBalanceString());
         styleMessageBox(&msgBox);
         msgBox.exec();
-        ui->detailDisplay->setText(currentAccount->getAccountDetails()); // Rafraîchir l'affichage
-        updateTransactionDisplay();
+        ui->detailDisplay->setText(currentAccount->getAccountDetails());
         statusBar()->showMessage("Retrait de " + QString::number(amount, 'f', 2) + " € effectué.");
         ui->amountLineEdit->clear();
     } else {
-        // Partie 5 : Erreur si solde insuffisant
         QMessageBox msgBox(this);
         msgBox.setIcon(QMessageBox::Critical);
         msgBox.setWindowTitle("Fonds insuffisants");
@@ -640,7 +657,6 @@ void MainWindow::onCurrencyChanged(int index)
                           .arg(QString::number(converted, 'f', 2) + " " + currency);
 
     ui->detailDisplay->setText(details);
-    updateTransactionDisplay();
 }
 
 // --- BONUS 6 : AFFICHER L'HISTORIQUE ---

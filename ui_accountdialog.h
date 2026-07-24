@@ -152,6 +152,7 @@ public:
         pinEdit = new QLineEdit(AccountDialog);
         pinEdit->setObjectName("pinEdit");
         pinEdit->setMaxLength(4);
+        pinEdit->setEchoMode(QLineEdit::Password);
 
         formLayout->setWidget(3, QFormLayout::ItemRole::FieldRole, pinEdit);
 

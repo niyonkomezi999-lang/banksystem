@@ -8,12 +8,14 @@ SOURCES += main.cpp\
         accountdialog.cpp \
         mainwindows.cpp\
         bankaccount.cpp \
-        databasemanager.cpp
+        databasemanager.cpp \
+        logindialog.cpp
 
 HEADERS  += mainwindows.h\
         accountdialog.h \
         bankaccount.h \
-        databasemanager.h
+        databasemanager.h \
+        logindialog.h
 
 FORMS += \
     accountdialog.ui \

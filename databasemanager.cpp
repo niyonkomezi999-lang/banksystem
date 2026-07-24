@@ -2,6 +2,7 @@
 #include <QSqlQuery>
 #include <QSqlError>
 #include <QDebug>
+#include <QDateTime>
 
 DatabaseManager::DatabaseManager(QObject *parent)
     : QObject(parent) {}
@@ -19,13 +20,20 @@ bool DatabaseManager::openDatabase() {
         return false;
     }
 
-    return createTable();
+    if (!createTable()) return false;
+    if (!createTransactionTable()) return false;
+
+    return true;
 }
 
 void DatabaseManager::closeDatabase() {
     if (db.isOpen()) {
         db.close();
     }
+}
+
+bool DatabaseManager::isDatabaseOpen() const {
+    return db.isOpen();
 }
 
 bool DatabaseManager::createTable() {
@@ -66,6 +74,65 @@ bool DatabaseManager::createTable() {
     }
 
     return true;
+}
+
+bool DatabaseManager::createTransactionTable() {
+    QSqlQuery query;
+    QString sql = "CREATE TABLE IF NOT EXISTS transactions ("
+                  "id INTEGER PRIMARY KEY AUTOINCREMENT, "
+                  "account_number INTEGER NOT NULL, "
+                  "description TEXT NOT NULL, "
+                  "created_at TEXT NOT NULL, "
+                  "FOREIGN KEY(account_number) REFERENCES accounts(account_number))";
+
+    if (!query.exec(sql)) {
+        qDebug() << "Error creating transactions table:" << query.lastError().text();
+        return false;
+    }
+
+    return true;
+}
+
+bool DatabaseManager::addTransaction(int accountNumber, const QString &description) {
+    if (!db.isOpen() && !db.open()) {
+        return false;
+    }
+
+    QSqlQuery query;
+    query.prepare("INSERT INTO transactions (account_number, description, created_at) "
+                  "VALUES (?, ?, ?)");
+    query.addBindValue(accountNumber);
+    query.addBindValue(description);
+    query.addBindValue(QDateTime::currentDateTime().toString(Qt::ISODate));
+
+    if (!query.exec()) {
+        qDebug() << "Error inserting transaction:" << query.lastError().text();
+        return false;
+    }
+    return true;
+}
+
+bool DatabaseManager::loadTransactions(QMap<int, QList<QString>> &transactionHistory) {
+    transactionHistory.clear();
+
+    if (!db.isOpen() && !db.open()) {
+        return false;
+    }
+
+    QSqlQuery query("SELECT account_number, description, created_at FROM transactions ORDER BY created_at ASC");
+
+    while (query.next()) {
+        int accNum = query.value(0).toInt();
+        QString description = query.value(1).toString();
+        QString createdAt = query.value(2).toString();
+
+        transactionHistory[accNum].append(description + " | " + createdAt);
+    }
+
+    return true;
+}
+
+void DatabaseManager::initializeDefaultData() {
 }
 
 bool DatabaseManager::loadAccounts(QList<BankAccount> &accounts) {

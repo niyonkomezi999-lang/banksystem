@@ -15,14 +15,19 @@ public:
 
     bool openDatabase();
     void closeDatabase();
+    bool isDatabaseOpen() const;
 
     bool loadAccounts(QList<BankAccount> &accounts);
     bool insertAccount(const BankAccount &account);
     bool updateAccount(const BankAccount &account);
     bool accountExists(int accountNumber) const;
+    bool addTransaction(int accountNumber, const QString &description);
+    bool loadTransactions(QMap<int, QList<QString>> &transactionHistory);
+    void initializeDefaultData();
 
 private:
     bool createTable();
+    bool createTransactionTable();
 
     QSqlDatabase db;
 };

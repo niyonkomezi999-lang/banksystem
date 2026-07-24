@@ -285,6 +285,7 @@ public:
         pinLineEdit = new QLineEdit(groupBox);
         pinLineEdit->setObjectName("pinLineEdit");
         pinLineEdit->setMaxLength(4);
+        pinLineEdit->setEchoMode(QLineEdit::Password);
 
         horizontalLayout_2->addWidget(pinLineEdit);
 

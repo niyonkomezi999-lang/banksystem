@@ -1,0 +1,10 @@
+debug/main.o
+debug/accountdialog.o
+debug/mainwindows.o
+debug/bankaccount.o
+debug/databasemanager.o
+debug/logindialog.o
+debug/moc_mainwindows.o
+debug/moc_accountdialog.o
+debug/moc_databasemanager.o
+debug/moc_logindialog.o

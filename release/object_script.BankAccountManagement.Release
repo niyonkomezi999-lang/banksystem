@@ -1,0 +1,10 @@
+release/main.o
+release/accountdialog.o
+release/mainwindows.o
+release/bankaccount.o
+release/databasemanager.o
+release/logindialog.o
+release/moc_mainwindows.o
+release/moc_accountdialog.o
+release/moc_databasemanager.o
+release/moc_logindialog.o
